@@ -1,6 +1,6 @@
 # unity-docker
 
-Based on [grableroux/unity3d](hhttps://gitlab.com/gableroux/unity3d).
+Based on [grableroux/unity3d](https://gitlab.com/gableroux/unity3d).
 
 Linux Unity3d builds are taken from [Unity on Linux: Release Notes and Known Issues](https://forum.unity3d.com/threads/unity-on-linux-release-notes-and-known-issues.350256/)
 

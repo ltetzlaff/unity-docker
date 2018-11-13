@@ -1,13 +1,12 @@
 FROM ubuntu:16.04
 
-ARG DOWNLOAD_URL
-
 RUN apt-get update -qq; \
     apt-get install -qq -y \
     gconf-service \
     lib32gcc1 \
     lib32stdc++6 \
     libasound2 \
+    libarchive13 \
     libc6 \
     libc6-i386 \
     libcairo2 \
@@ -24,9 +23,11 @@ RUN apt-get update -qq; \
     libglib2.0-0 \
     libglu1-mesa \
     libgtk2.0-0 \
+    libgtk3.0 \
     libnspr4 \
     libnss3 \
     libpango1.0-0 \
+    libsoup2.4-1 \
     libstdc++6 \
     libx11-6 \
     libxcomposite1 \
@@ -49,17 +50,27 @@ RUN apt-get update -qq; \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -nv ${DOWNLOAD_URL} -O unity.deb; \
-    # compare sha1 if given
-    if [ -n "${SHA1}" -a "${SHA1}" != "" ]; then \
-      echo "${SHA1}  unity.deb" | shasum -a 1 --check -; \
-    else \
-      echo "no sha1 given, skipping checksum"; \
-    fi && \
-    # install unity
-    dpkg -i unity.deb && \
+ARG DOWNLOAD_URL="https://beta.unity3d.com/download/dad990bf2728/UnitySetup-2018.2.7f1"
+
+RUN wget -nv ${DOWNLOAD_URL} -O UnitySetup && \
+    # make executable
+    chmod +x UnitySetup
+
+ARG COMPONENTS=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL
+
+RUN \
+    # agree with license
+    echo yes | \
+    # install unity with required components
+    ./UnitySetup --unattended \
+    --install-location=/opt/Unity \
+    --verbose \
+    --download-location=/tmp/unity \
+    --components=$COMPONENTS
+
+RUN \
     # remove setup
-    rm unity.deb && \
+    rm UnitySetup && \
     # make a directory for the certificate Unity needs to run
     mkdir -p $HOME/.local/share/unity3d/Certificates/
 
