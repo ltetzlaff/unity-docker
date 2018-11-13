@@ -1,0 +1,42 @@
+image: "ltetzlaff/unity"
+
+stages:
+  - build
+
+variables:
+  BUILD_NAME: ExampleProjectName
+
+.unity_before_script: &unity_before_script
+  before_script:
+    - chmod +x /ci/before_script.sh && /ci/before_script.sh
+
+.build: &build
+  stage: build
+  <<: *unity_before_script
+  script:
+    - chmod +x /ci/build.sh && /ci/build.sh
+  artifacts:
+    paths:
+      - ./Builds/
+  only:
+    - master
+
+build-StandaloneLinux64:
+  <<: *build
+  variables:
+    BUILD_TARGET: StandaloneLinux64
+
+build-StandaloneOSX:
+  <<: *build
+  variables:
+    BUILD_TARGET: StandaloneOSX
+
+build-StandaloneWindows64:
+  <<: *build
+  variables:
+    BUILD_TARGET: StandaloneWindows64
+
+# build-WebGL:
+#   <<: *build
+#   variables:
+#     BUILD_TARGET: WebGL

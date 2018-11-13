@@ -78,3 +78,7 @@ ADD CACerts.pem $HOME/.local/share/unity3d/Certificates/
 
 # Clean up
 RUN rm -rf /tmp/* /var/tmp/*
+
+# Make scripts available to CI
+RUN mkdir -p /ci
+ADD scripts/*.sh /ci/
